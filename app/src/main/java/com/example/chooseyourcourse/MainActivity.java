@@ -56,6 +56,7 @@ public class MainActivity extends Activity implements OnClickListener,
     private ImageView imgProfilePic;
     private TextView txtName, txtEmail, course;
     private LinearLayout llProfileLayout;
+    private Button SC;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +70,12 @@ public class MainActivity extends Activity implements OnClickListener,
         course = (TextView) findViewById(R.id.txtCourses);
         txtEmail = (TextView) findViewById(R.id.txtEmail);
         llProfileLayout = (LinearLayout) findViewById(R.id.llProfile);
+        SC=(Button)findViewById(R.id.Scourse);
 
         // Button click listeners
         btnSignIn.setOnClickListener(this);
         btnSignOut.setOnClickListener(this);
+        SC.setOnClickListener(this);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -153,6 +156,7 @@ public class MainActivity extends Activity implements OnClickListener,
         // Get user's information
         getProfileInformation();
 
+
         // Update the UI after signin
         updateUI(true);
 
@@ -167,11 +171,13 @@ public class MainActivity extends Activity implements OnClickListener,
             btnSignOut.setVisibility(View.VISIBLE);
             llProfileLayout.setVisibility(View.VISIBLE);
             course.setText("Courses:");
+            SC.setVisibility(View.VISIBLE);
         } else {
             btnSignIn.setVisibility(View.VISIBLE);
             btnSignOut.setVisibility(View.GONE);
             llProfileLayout.setVisibility(View.GONE);
             course.setText(" ");
+            SC.setVisibility(View.GONE);
         }
     }
 
@@ -239,6 +245,12 @@ public class MainActivity extends Activity implements OnClickListener,
                 // Signout button clicked
                 signOutFromGplus();
                 break;
+            case R.id.Scourse:
+            {
+                Intent intent=new Intent(MainActivity.this,SelectCourse.class);
+                startActivity(intent);
+				break;
+            }
         }
     }
 

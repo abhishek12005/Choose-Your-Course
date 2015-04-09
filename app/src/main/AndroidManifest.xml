@@ -28,6 +28,10 @@
             android:name=".Profile"
             android:label="@string/title_activity_profile" >
         </activity>
+        <activity
+            android:name=".SelectCourse"
+            android:label="@string/title_activity_select_course" >
+        </activity>
     </application>
 
 </manifest>

@@ -4,25 +4,35 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 
-public class Profile extends ActionBarActivity {
-
-    private Button sc;
+public class SelectCourse extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-        sc=(Button)findViewById(R.id.button);
+        setContentView(R.layout.activity_select_course);
+        MyAdapter adapter = new MyAdapter(this, generateData());
+        ListView listView = (ListView) findViewById(R.id.listView2);
+        listView.setAdapter(adapter);
     }
 
+    private ArrayList<Items> generateData(){
+        ArrayList<Items> items = new ArrayList<Items>();
+        items.add(new Items("Item 1"));
+        items.add(new Items("Item 2"));
+        items.add(new Items("Item 3"));
+
+        return items;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        getMenuInflater().inflate(R.menu.menu_select_course, menu);
         return true;
     }
 
