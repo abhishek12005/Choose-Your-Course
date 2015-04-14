@@ -64,9 +64,8 @@
         android:id="@+id/Scourse"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Select Courses"
+        android:text="Go To Main Page!"
         android:visibility="gone"
-
         android:layout_marginTop="210dp" />
 
 

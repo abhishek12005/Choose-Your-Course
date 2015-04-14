@@ -1,7 +1,5 @@
 package com.example.chooseyourcourse;
 
-import java.io.InputStream;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
@@ -27,6 +25,15 @@ import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class MainActivity extends Activity implements OnClickListener,
         ConnectionCallbacks, OnConnectionFailedListener {
@@ -170,7 +177,7 @@ public class MainActivity extends Activity implements OnClickListener,
             btnSignIn.setVisibility(View.GONE);
             btnSignOut.setVisibility(View.VISIBLE);
             llProfileLayout.setVisibility(View.VISIBLE);
-            course.setText("Courses:");
+            getCourses();
             SC.setVisibility(View.VISIBLE);
         } else {
             btnSignIn.setVisibility(View.VISIBLE);
@@ -178,6 +185,52 @@ public class MainActivity extends Activity implements OnClickListener,
             llProfileLayout.setVisibility(View.GONE);
             course.setText(" ");
             SC.setVisibility(View.GONE);
+        }
+    }
+
+    private void getCourses(){
+        new StudentSearch().execute();
+    }
+
+    private class StudentSearch extends AsyncTask<String, Void, String >
+    {
+
+        String content = "";
+        @Override
+        protected String doInBackground(String... urls) {
+
+            HttpClient httpClient = new DefaultHttpClient();
+            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+            HttpGet httpget = new HttpGet("http://192.168.55.110:8080/searchvideo/"+email);
+
+            StringBuffer studentString = new StringBuffer();
+            try {
+                HttpResponse response = httpClient.execute(httpget);
+                InputStream responseString = response.getEntity().getContent();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(responseString));
+                String res = "";
+                while((res = reader.readLine())!=null)
+                {
+                    studentString.append(res);
+                    studentString.append("\n");
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+
+            return studentString.toString();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (!s.isEmpty()){
+                course.setText("Courses Taken:\n"+s);}
+            else
+                course.setText("No Courses Taken!");
+
         }
     }
 
