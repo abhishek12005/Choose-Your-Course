@@ -201,7 +201,7 @@ public class MainActivity extends Activity implements OnClickListener,
 
             HttpClient httpClient = new DefaultHttpClient();
             String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-            HttpGet httpget = new HttpGet("http://192.168.55.110:8080/searchvideo/"+email);
+            HttpGet httpget = new HttpGet("http://192.168.49.8:8080/searchvideo/"+email);
 
             StringBuffer studentString = new StringBuffer();
             try {
