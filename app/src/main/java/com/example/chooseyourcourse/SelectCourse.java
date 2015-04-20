@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -88,7 +89,7 @@ public class SelectCourse extends ActionBarActivity implements
             HttpClient httpClient = new DefaultHttpClient();
 
             String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-            HttpPost httpPost = new HttpPost("http://192.168.49.8:8080/addcourse/");
+            HttpPost httpPost = new HttpPost("http://192.168.49.8:8080/poststudent");
 
             List<NameValuePair> params = new ArrayList<NameValuePair>();
 
@@ -136,6 +137,7 @@ public class SelectCourse extends ActionBarActivity implements
         courses[2] = "ICW (HSS XXX)";
         choose = position;
         new CourseAdd().execute();
+        Toast.makeText(this, courses[position]+" is Added!", Toast.LENGTH_LONG).show();
     }
 
     private ArrayList<Items> generateData(){

@@ -29,11 +29,18 @@ import com.google.android.gms.plus.model.people.Person;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 public class MainActivity extends Activity implements OnClickListener,
         ConnectionCallbacks, OnConnectionFailedListener {
@@ -64,6 +71,11 @@ public class MainActivity extends Activity implements OnClickListener,
     private TextView txtName, txtEmail, course;
     private LinearLayout llProfileLayout;
     private Button SC;
+
+    private String personName;
+    private String personPhotoUrl;
+    private String personGooglePlusProfile;
+    private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,6 +204,8 @@ public class MainActivity extends Activity implements OnClickListener,
         new StudentSearch().execute();
     }
 
+
+
     private class StudentSearch extends AsyncTask<String, Void, String >
     {
 
@@ -200,8 +214,7 @@ public class MainActivity extends Activity implements OnClickListener,
         protected String doInBackground(String... urls) {
 
             HttpClient httpClient = new DefaultHttpClient();
-            String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-            HttpGet httpget = new HttpGet("http://192.168.49.8:8080/searchvideo/"+email);
+            HttpGet httpget = new HttpGet("http://192.168.51.61:8080/searchstudent/"+email);
 
             StringBuffer studentString = new StringBuffer();
             try {
@@ -210,10 +223,36 @@ public class MainActivity extends Activity implements OnClickListener,
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(responseString));
                 String res = "";
-                while((res = reader.readLine())!=null)
-                {
+                if ((res = reader.readLine()) == null) {
+                    studentString.append("");
+                    HttpPost httpPost = new HttpPost("http://192.168.51.61:8080/poststudent/");
+
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("name", personName);
+                        jsonObject.put("email", email);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        StringEntity se = new StringEntity(jsonObject.toString());
+                        se.setContentType("application/json;charset=UTF-8");
+                        se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json;charset=UTF-8"));
+                        httpPost.setEntity(se);
+                    } catch (UnsupportedEncodingException e) {
+                        // writing error to Log
+                        e.printStackTrace();
+                    }
+
+                } else {
                     studentString.append(res);
                     studentString.append("\n");
+                    while ((res = reader.readLine()) != null) {
+                        studentString.append(res);
+                        studentString.append("\n");
+                    }
+
                 }
             }
             catch(Exception e)
@@ -242,10 +281,10 @@ public class MainActivity extends Activity implements OnClickListener,
             if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
                 Person currentPerson = Plus.PeopleApi
                         .getCurrentPerson(mGoogleApiClient);
-                String personName = currentPerson.getDisplayName();
-                String personPhotoUrl = currentPerson.getImage().getUrl();
-                String personGooglePlusProfile = currentPerson.getUrl();
-                String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+                personName = currentPerson.getDisplayName();
+                personPhotoUrl = currentPerson.getImage().getUrl();
+                personGooglePlusProfile = currentPerson.getUrl();
+                email = Plus.AccountApi.getAccountName(mGoogleApiClient);
 
                 Log.e(TAG, "Name: " + personName + ", plusProfile: "
                         + personGooglePlusProfile + ", email: " + email
