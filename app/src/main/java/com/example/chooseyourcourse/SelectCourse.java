@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -56,6 +58,20 @@ public class SelectCourse extends ActionBarActivity implements
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API)
                 .addScope(Plus.SCOPE_PLUS_LOGIN).build();
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                courses[0] = "Practice of Programming (CSE 301)";
+                courses[1] = "PCSMA (CSE 635)";
+                courses[2] = "ICW (HSS XXX)";
+
+                choose = position;
+                new CourseAdd().execute();
+                Log.e("abc", "afterclick");
+                Toast.makeText(SelectCourse.this, courses[position] + " is Added!", Toast.LENGTH_LONG).show();
+
+            }
+        });
     }
 
     @Override

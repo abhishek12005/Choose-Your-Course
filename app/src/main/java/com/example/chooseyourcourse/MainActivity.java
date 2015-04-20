@@ -34,6 +34,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -223,14 +224,19 @@ public class MainActivity extends Activity implements OnClickListener,
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(responseString));
                 String res = "";
+                Log.e("Main","in Async");
                 if ((res = reader.readLine()) == null) {
                     studentString.append("");
+                    Log.e("Main","Before Post");
+                    HttpClient client = new DefaultHttpClient();
                     HttpPost httpPost = new HttpPost("http://192.168.51.61:8080/poststudent/");
+                    Log.e("Main","after Post");
 
                     JSONObject jsonObject = new JSONObject();
                     try {
                         jsonObject.put("name", personName);
                         jsonObject.put("email", email);
+                        jsonObject.put("courses", " ");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -240,12 +246,16 @@ public class MainActivity extends Activity implements OnClickListener,
                         se.setContentType("application/json;charset=UTF-8");
                         se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json;charset=UTF-8"));
                         httpPost.setEntity(se);
+                        HttpResponse resp = client.execute(httpPost);
+                        String responseText = EntityUtils.toString(resp.getEntity());
+                        Log.e("Main","response:"+responseText);
                     } catch (UnsupportedEncodingException e) {
                         // writing error to Log
                         e.printStackTrace();
                     }
 
                 } else {
+                    Log.e("Main","in new");
                     studentString.append(res);
                     studentString.append("\n");
                     while ((res = reader.readLine()) != null) {

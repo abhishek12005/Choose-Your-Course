@@ -37,7 +37,7 @@ public class MyAdapter extends ArrayAdapter<Items> {
         View rowView = inflater.inflate(R.layout.row, parent, false);
 
         // 3. Get the two text view from the rowView
-        CheckBox labelView = (CheckBox) rowView.findViewById(R.id.checkBox);
+        TextView labelView = (TextView) rowView.findViewById(R.id.checkBox);
 
 
         // 4. Set the text for textView
